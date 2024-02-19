@@ -247,12 +247,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ground: {fileID: 984443469}
-  _groundSize: 5
+  GroundSize: 5
   _agentStartNumber: 4
-  _maxAgentsNumber: 13
+  _maxAgentsNumber: 30
   Agent: {fileID: 858339235624384736, guid: 33e7b217ac94cec4ca6d23efb3fb8d44, type: 3}
-  _spawnDelay: 3.63
-  agentsList: []
+  _spawnDelay: 2
+  AgentsList: []
 --- !u!4 &717256011
 Transform:
   m_ObjectHideFlags: 0

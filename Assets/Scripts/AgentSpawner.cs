@@ -8,7 +8,7 @@ class AgentSpawner : MonoBehaviour
     Transform _ground;
 
     [SerializeField]
-    int _groundSize;
+    public int GroundSize;
 
     [Range(3,5)]
     [SerializeField]
@@ -27,15 +27,18 @@ class AgentSpawner : MonoBehaviour
 
     public List<Transform> AgentsList;
 
-    void OnEnable()
+    public static AgentSpawner Instance;
+
+    private void Awake()
     {
-        _ground.localScale = new Vector3(_groundSize, 1,_groundSize);
+        Instance = this;
+        _ground.localScale = new Vector3(GroundSize, 1,GroundSize);
     }
 
     void Start()
     {
         for (int i = 0; i < _agentStartNumber; i++)
-            SpawnAgent(RandomGenerator.RandomVector(-_groundSize/0.2f, _groundSize/0.2f));
+            SpawnAgent(RandomGenerator.RandomVector(-GroundSize/0.2f, GroundSize/0.2f));
 
         StartCoroutine(SpawnerUpdate());
     }
@@ -46,7 +49,7 @@ class AgentSpawner : MonoBehaviour
         {
             yield return new WaitForSeconds(_spawnDelay);
             if (_maxAgentsNumber > AgentsList.Count)
-                SpawnAgent(RandomGenerator.RandomVector(-_groundSize/0.2f, _groundSize/0.2f));
+                SpawnAgent(RandomGenerator.RandomVector(-GroundSize/0.2f, GroundSize /0.2f));
         }
     }
 
