@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class AgentController : MonoBehaviour
 {
+    string agentName;
+
     [SerializeField]
     public float Speed;
 
@@ -19,6 +21,8 @@ public class AgentController : MonoBehaviour
         newTarget += SetTargetPosition;
         CurrentHp = _maxHp;
         newTarget.Invoke();
+        agentName = RandomGenerator.NameGenerator("Agent");
+        gameObject.name = agentName;
     }
 
     void Update()

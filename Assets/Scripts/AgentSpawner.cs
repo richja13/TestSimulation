@@ -68,5 +68,17 @@ public class RandomGenerator
         var z = Random.Range(min, max);
         return new Vector3(x,1,z);
     }
+
+    public static string NameGenerator(string name)
+    {
+        string number = null;
+        for (int i = 0; i < 3; i++)
+        {
+            var rnd = Random.Range(0, 9);
+            number += rnd.ToString();
+        }
+
+        return $"{name}:{number}";
+    }
 }
 
