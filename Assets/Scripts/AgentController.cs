@@ -1,16 +1,17 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AgentController : MonoBehaviour
 {
-    string agentName;
+    public string AgentName;
 
     [SerializeField]
     public float Speed;
 
     [SerializeField]
     float _maxHp;
-    protected float CurrentHp;
+    public float CurrentHp;
     Vector3 _targetPos;
 
     public delegate void NewTarget();
@@ -21,8 +22,8 @@ public class AgentController : MonoBehaviour
         newTarget += SetTargetPosition;
         CurrentHp = _maxHp;
         newTarget.Invoke();
-        agentName = RandomGenerator.NameGenerator("Agent");
-        gameObject.name = agentName;
+        AgentName = RandomGenerator.NameGenerator("Agent");
+        gameObject.name = AgentName;
     }
 
     void Update()
@@ -56,13 +57,13 @@ public class AgentController : MonoBehaviour
         CurrentHp--;
         if (CurrentHp <= 0)
         {
-            AgentSpawner.Instance.AgentsList.Remove(transform);
-            Destroy(this);
+            Destroy(this.gameObject);
         }
     }
 
     private void OnDestroy()
     {
+        AgentSpawner.Instance.AgentsList.Remove(transform);
         newTarget -= SetTargetPosition;
     }
 }

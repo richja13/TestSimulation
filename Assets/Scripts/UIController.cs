@@ -25,7 +25,6 @@ public class UIController : MonoBehaviour
     delegate void MouseClicked(RaycastHit hit);
     event MouseClicked mouseClicked;
 
-
     void Start()
     {
         _animator = GetComponent<Animator>();
@@ -59,15 +58,22 @@ public class UIController : MonoBehaviour
         if (_selectedObject is null)
             _selectedObject = objTransform;
 
-        if (objTransform.name == _selectedObject.name)
+        if (objTransform == _selectedObject)
         {
             _opened = (_opened) ? false : true;
             _animator.SetBool("toggle", _opened);
         }
         else
-        {
             _selectedObject = objTransform;
-            _animator.SetTrigger("reset");
-        }
+
+        if (!_opened || _selectedObject is null) return;
+            GetAgentStatistics(_selectedObject.GetComponent<AgentController>());
+    }
+
+    void GetAgentStatistics(AgentController controller)
+    {
+        _nameText.text = controller.AgentName;
+        _hpText.text = controller.CurrentHp.ToString();
+        _hpSlider.value = controller.CurrentHp;
     }
 }
