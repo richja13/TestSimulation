@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class UIController : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class UIController : MonoBehaviour
     bool _opened;
 
     Transform _selectedObject;
+
+    [SerializeField]
+    Material _outlineMaterial;
 
     delegate void MouseClicked(RaycastHit hit);
     event MouseClicked mouseClicked;
@@ -62,12 +66,42 @@ public class UIController : MonoBehaviour
         {
             _opened = (_opened) ? false : true;
             _animator.SetBool("toggle", _opened);
+            RemoveOutline();
+            AddOutline();
         }
         else
+        {
+            RemoveOutline();
             _selectedObject = objTransform;
+            AddOutline();
+        }
 
         if (!_opened || _selectedObject is null) return;
-            GetAgentStatistics(_selectedObject.GetComponent<AgentController>());
+        GetAgentStatistics(_selectedObject.GetComponent<AgentController>());
+    }
+
+    void AddOutline()
+    {
+        if (_selectedObject is null || _opened is false) 
+            return;
+        var renderer = _selectedObject.GetComponent<MeshRenderer>();
+        var material = renderer.material;
+        List<Material> materialsList = new();
+        materialsList.Add(material);
+        materialsList.Add(_outlineMaterial);
+        renderer.SetMaterials(materialsList);
+    }
+
+    void RemoveOutline()
+    {
+        if (_selectedObject is null)
+            return;
+
+        var renderer = _selectedObject.GetComponent<MeshRenderer>();
+        var material = renderer.material;
+        List<Material> materialsList = new();
+        materialsList.Add(material);
+        renderer.SetMaterials(materialsList);
     }
 
     void GetAgentStatistics(AgentController controller)
