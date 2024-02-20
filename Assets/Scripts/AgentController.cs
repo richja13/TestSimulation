@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AgentController : MonoBehaviour
@@ -17,7 +15,7 @@ public class AgentController : MonoBehaviour
     public delegate void NewTarget();
     public event NewTarget newTarget;
 
-    void Start()
+    void OnEnable()
     {
         newTarget += SetTargetPosition;
         CurrentHp = _maxHp;
@@ -56,14 +54,16 @@ public class AgentController : MonoBehaviour
     {
         CurrentHp--;
         if (CurrentHp <= 0)
-        {
-            Destroy(this.gameObject);
-        }
+            gameObject.SetActive(false);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
-        AgentSpawner.Instance.AgentsList.Remove(transform);
+        UIController.CheckIfSelectedObjectDisabled(transform);
         newTarget -= SetTargetPosition;
+
+        if (AgentSpawner.AgentsList is null) return;
+        if (AgentSpawner.AgentsList.Contains(transform))
+            AgentSpawner.AgentsList.Remove(transform);
     }
 }

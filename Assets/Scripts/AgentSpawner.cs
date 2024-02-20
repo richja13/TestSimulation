@@ -16,16 +16,13 @@ class AgentSpawner : MonoBehaviour
 
     [Range(5,30)]
     [SerializeField]
-    int _maxAgentsNumber;
-
-    [SerializeField]
-    public GameObject Agent;
+    public int MaxAgentsNumber;
 
     [Range(2,6)]
     [SerializeField]
     float _spawnDelay;
 
-    public List<Transform> AgentsList;
+    public static List<Transform> AgentsList = new();
 
     public static AgentSpawner Instance;
 
@@ -48,14 +45,14 @@ class AgentSpawner : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(_spawnDelay);
-            if (_maxAgentsNumber > AgentsList.Count)
+            if (MaxAgentsNumber > AgentsList.Count)
                 SpawnAgent(RandomGenerator.RandomVector(-GroundSize/0.2f, GroundSize /0.2f));
         }
     }
 
     void SpawnAgent(Vector3 spawnPos)
     {
-        var agent = Instantiate(Agent, spawnPos, transform.rotation);
+        var agent = AgentsPooler.Instance.SpawnFromPool(spawnPos, Quaternion.identity);
         AgentsList.Add(agent.transform);
     }
 }

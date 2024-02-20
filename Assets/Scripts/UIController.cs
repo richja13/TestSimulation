@@ -15,14 +15,17 @@ public class UIController : MonoBehaviour
     TMP_Text _nameText;
 
     [SerializeField]
-    Animator _animator;
+    static Animator _animator;
 
-    bool _opened;
+    static bool _opened;
 
-    Transform _selectedObject;
+    public static Transform SelectedObject;
 
     [SerializeField]
     Material _outlineMaterial;
+
+    [SerializeField]
+    Transform _previewCamera;
 
     delegate void MouseClicked(RaycastHit hit);
     event MouseClicked mouseClicked;
@@ -35,7 +38,15 @@ public class UIController : MonoBehaviour
 
     void Update()
     {
-        DetectMouseClick();    
+        DetectMouseClick();
+
+        if (_opened && SelectedObject != null)
+        {
+            _previewCamera.gameObject.SetActive(true);
+            CameraFollow(SelectedObject.position);
+        }
+        else
+            _previewCamera.gameObject.SetActive(false);
     }
 
     void DetectMouseClick()
@@ -57,10 +68,10 @@ public class UIController : MonoBehaviour
 
     void ToggleUI(Transform objTransform)
     {
-        if (_selectedObject is null)
-            _selectedObject = objTransform;
+        if (SelectedObject is null)
+            SelectedObject = objTransform;
 
-        if (objTransform == _selectedObject)
+        if (objTransform == SelectedObject)
         {
             _opened = (_opened) ? false : true;
             _animator.SetBool("toggle", _opened);
@@ -70,19 +81,19 @@ public class UIController : MonoBehaviour
         else
         {
             RemoveOutline();
-            _selectedObject = objTransform;
+            SelectedObject = objTransform;
             AddOutline();
         }
 
-        if (!_opened || _selectedObject is null) return;
-        GetAgentStatistics(_selectedObject.GetComponent<AgentController>());
+        if (!_opened || SelectedObject is null) return;
+        GetAgentStatistics(SelectedObject.GetComponent<AgentController>());
     }
 
     void AddOutline()
     {
-        if (_selectedObject is null || _opened is false) 
+        if (SelectedObject is null || _opened is false) 
             return;
-        var renderer = _selectedObject.GetComponent<MeshRenderer>();
+        var renderer = SelectedObject.GetComponent<MeshRenderer>();
         var material = renderer.material;
         List<Material> materialsList = new();
         materialsList.Add(material);
@@ -90,12 +101,12 @@ public class UIController : MonoBehaviour
         renderer.SetMaterials(materialsList);
     }
 
-    void RemoveOutline()
+    static void RemoveOutline()
     {
-        if (_selectedObject is null)
+        if (SelectedObject is null)
             return;
 
-        var renderer = _selectedObject.GetComponent<MeshRenderer>();
+        var renderer = SelectedObject.GetComponent<MeshRenderer>();
         var material = renderer.material;
         List<Material> materialsList = new();
         materialsList.Add(material);
@@ -107,5 +118,23 @@ public class UIController : MonoBehaviour
         _nameText.text = controller.AgentName;
         _hpText.text = $"{controller.CurrentHp}/3";
         _hpSlider.value = controller.CurrentHp;
+    }
+
+    public static void CheckIfSelectedObjectDisabled(Transform agentTransform)
+    {
+        if (SelectedObject is null) return;
+
+        if (agentTransform == SelectedObject.transform)
+        {
+            _opened = false;
+            _animator.SetBool("toggle", _opened);
+            RemoveOutline();
+            SelectedObject = null;
+        }
+    }
+
+    void CameraFollow(Vector3 pos)
+    {
+        _previewCamera.transform.position = pos;
     }
 }
