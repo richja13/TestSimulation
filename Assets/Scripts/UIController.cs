@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 
 public class UIController : MonoBehaviour
 {
@@ -107,7 +105,7 @@ public class UIController : MonoBehaviour
     void GetAgentStatistics(AgentController controller)
     {
         _nameText.text = controller.AgentName;
-        _hpText.text = controller.CurrentHp.ToString();
+        _hpText.text = $"{controller.CurrentHp}/3";
         _hpSlider.value = controller.CurrentHp;
     }
 }
